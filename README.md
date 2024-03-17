@@ -1,4 +1,4 @@
-# Smart-farm-system
+# 스마트팜 시스템 구축
 스마트팜 시스템 구축을 위하여 클라우드 서버(AWS EC2), IoT(아두이노, 라즈베리파이 카메라)를 연동하였습니다. 
 
 IoT 센서와 클라우드 서버간 데이터 통신 및 데이터베이스 저장 시스템을 구축하였습니다. 
@@ -14,9 +14,10 @@ IoT 센서와 클라우드 서버간 데이터 통신 및 데이터베이스 저
 3. 클라우드 서버 : 현장 데이터 획득 서버 구현. 웹 서버 및 UI 구현
 
 ---------------------------------------------
-개발 과정
 
-[스마트팜.pptx](https://github.com/Hong-SukJun/Smart-farm-system/files/14628928/default.pptx)
+개발 과정 - [스마트팜.pptx](https://github.com/Hong-SukJun/Smart-farm-system/files/14628940/default.pptx)
+
+
 ---------------------------------------------
 
 ![image](https://github.com/Hong-SukJun/Smart-farm-system/assets/163775403/417c568a-6f86-4870-a985-4f12cd828024)
