@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMARTFARM</title>
+        <!-- bootstrap css -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <!-- style css -->
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div class="header_section layout_padding">
+        <div class="container">
+            <div>
+                <img src="images/farm-twin.png" id="farm-twin">
+            </div>
+        </div>
+        <div class="container">
+            <!-- <img src="images/gear.png" id="gear"> -->
+            <div class="flex">
+                <div class="flex mt-2">
+                    <img src="images/cctv_w.svg" class="btn-img" style="width:40px;margin-right:10px; margin-top:6px;">
+                    <p id="dashboard" class="left mb-0 mt-0">CCTV</p>
+                </div>
+                <div class="right">Spatial Computing Lab.<br>
+                    Kwangwoon University </div>
+            </div>
+        </div>
+    </div>
+    <div class="about_section layout_padding pb-0">
+        <div class="container mb-3">
+            <input type="date" id="datepicker" class="form-control">
+        </div>
+     </div>
+
+     <div class="footer_section">
+        <p class="center">copyright 2023 SMARTFARM</p>
+    </div>
+    <!-- Javascript files-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 기본값 = 오늘날짜
+        document.getElementById('datepicker').value = new Date().toISOString().substring(0, 10);
+    </script>      

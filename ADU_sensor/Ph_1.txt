@@ -1,0 +1,197 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include "time.h"  // 시계 라이브러리   
+#define SensorPin A0
+#define Offset -0.85  // ph7.0 측정 시 오프셋 30 -1.9 보정값
+#define samplingInterval 20
+#define ArrayLenth 40
+int pHArray[ArrayLenth];
+int pHArrayIndex = 0;
+String group = "1";
+
+const char* ssid = "veea";
+const char* password =  "";
+String url = "https://farm.sc-lab.kr/";
+
+const char* ntpServer = "pool.ntp.org";     // NTP 서버
+uint8_t timeZone = 9;                       // 한국 타임존 설정
+uint8_t summerTime = 0; // 3600             // 썸머타임 시간
+
+int s_hh = 12;        // 시간 설정용 시 변수 및 초기값, < 0 조건 위해 자료형 int
+int s_mm = 59;        // 시간 설정용 분 변수 및 초기값 
+uint8_t s_ss = 45;    // 시간 설정용 초 변수 및 초기값 
+uint16_t s_yy = 2023; // 시간 설정용 년 변수 및 초기값 
+uint8_t s_MM = 11;    // 시간 설정용 월 변수 및 초기값 
+uint8_t s_dd = 19;    // 시간 설정용 일 변수 및 초기값 
+
+time_t now;           // 현재 시간 변수 
+time_t prevEpoch;     // 이전 UTC 시간 변수
+struct tm * timeinfo; // 로컬 시간 반영용 포인터 변수 선언
+
+void get_NTP() {     // NTP 서버 시간 동기화
+  configTime(3600 * timeZone, 3600 * summerTime, ntpServer); // NTP 서버 접속 및 동기화 함수
+  timeinfo = localtime(&now);                 // 로컬 시간값 확인
+  while (timeinfo->tm_year +1900 == 1970) {   // 시간 동기화 안되어 있으면, 1970년
+    Serial.println("Failed to obtain time");  // 메시지 표시
+    set_time();   // set time                 // 초기값으로 시간 설정
+    localtime(&now);                          // 로컬 시간 반영 재실행
+    return;
+  }
+}
+
+void set_time() {   // 사용자 시간 설정 함수
+  struct tm tm_in;     // 사용자 시간 설정용 구조체 변수 선언
+  tm_in.tm_year = s_yy - 1900;
+  tm_in.tm_mon = s_MM - 1;
+  tm_in.tm_mday = s_dd;
+  tm_in.tm_hour = s_hh;
+  tm_in.tm_min = s_mm;
+  tm_in.tm_sec = s_ss;
+  time_t ts = mktime(&tm_in);                  // UTC 시간 값으로 변환
+  printf("Setting time: %s", asctime(&tm_in)); // 설정 시간을 문자열로 출력
+  struct timeval now = { .tv_sec = ts };       // 설정시간을 현재 시간에 반영 
+  settimeofday(&now, NULL);
+}
+
+void printLocalTime() {
+  time_t now;
+  if (time(&now) != prevEpoch) {
+    Serial.println(time(&now));
+    struct tm* timeinfo = localtime(&now);
+    int dd = timeinfo->tm_mday;
+    int MM = timeinfo->tm_mon + 1;
+    int yy = timeinfo->tm_year + 1900;
+    int ss = timeinfo->tm_sec;
+    int mm = timeinfo->tm_min;
+    int hh = timeinfo->tm_hour;
+    int week = timeinfo->tm_wday;
+    Serial.print(week); Serial.print(". ");
+    Serial.print(yy); Serial.print(". ");
+    Serial.print(MM); Serial.print(". ");
+    Serial.print(dd); Serial.print(" ");
+    Serial.print(hh); Serial.print(": ");
+    Serial.print(mm); Serial.print(": ");
+    Serial.println(ss);
+    static float pHValue, voltage;
+    
+    pHArray[pHArrayIndex++] = analogRead(SensorPin);
+    if (pHArrayIndex == ArrayLenth) pHArrayIndex = 0;
+    voltage = avergearray(pHArray, ArrayLenth) * 5.0 / 1024;
+    pHValue = 14 - (3.5 * voltage + Offset);
+    Serial.print("pH value: ");
+    Serial.println(pHValue);
+
+    prevEpoch = now;
+    if (mm == 15 || mm == 45){
+      if (ss == 34) {
+        send_data(yy, MM, dd, hh, pHValue);  
+      }
+    }
+  }
+}
+
+
+void send_data(int yy, int MM, int dd, int hh, float pHValue) {
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClientSecure client;
+    client.setInsecure();
+    if (isnan(pHValue)) {
+      Serial.println("Failed to read from DHT sensor!");
+    }
+    
+    
+    String MM_str = (MM < 10) ? "0" + String(MM) : String(MM);
+    String DD_str = (dd < 10) ? "0" + String(dd) : String(dd);
+    HTTPClient https;
+    String fullUrl = url + yy + "/" + MM_str + "/" + DD_str + "/conn.php?sensor_group=" + group + "&sensor_name=pH&sensor_data=" + String(pHValue);
+    Serial.println("HUMI Requesting " + fullUrl);
+    if (isnan(pHValue)) {
+      Serial.println("Failed to read from pH sensor!");
+    }
+    if (https.begin(client, fullUrl)) {
+      int httpCode = https.GET();
+      Serial.println("============== Response code:" + String(httpCode));
+    }
+
+    String fullUrl2 = url + "/sensor/conn.php?sensor_group=" + group + "&sensor_name=pH&sensor_data=" + String(pHValue);
+    Serial.println("HUMI Requesting " + fullUrl2);
+    if (isnan(pHValue)) {
+      Serial.println("Failed to read from pH sensor!");
+    }
+    if (https.begin(client, fullUrl2)) {
+      int httpCode = https.GET();
+      Serial.println("============== Response code:" + String(httpCode));
+    }
+  }
+}
+//
+double avergearray(int* arr, int number) {
+  int i;
+  int max, min;
+  double avg;
+  long amount = 0;
+  if (number <= 0) {
+    Serial.println("Error number for the array to avraging!/n");
+    return 0;
+  }
+  if (number < 5) {
+    for (i = 0; i < number; i++) {
+      amount += arr[i];
+    }
+    avg = amount / number;
+    return avg;
+  } else {
+    if (arr[0] < arr[1]) {
+      min = arr[0];
+      max = arr[1];
+    } else {
+      min = arr[1];
+      max = arr[0];
+    }
+    for (i = 2; i < number; i++) {
+      if (arr[i] < min) {
+        amount += min;
+        min = arr[i];
+      } else {
+        if (arr[i] > max) {
+          amount += max;
+          max = arr[i];
+        } else {
+          amount += arr[i];
+        }
+      }
+    }
+    avg = (double)amount / (number - 2);
+  }
+  return avg;
+}
+//
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  Serial.println("");
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.print("Connected to ");
+  Serial.println(ssid);
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+  get_NTP();                                // NTP 서버 시간 동기화 시작
+}
+
+
+void loop() {
+  if(Serial.available() > 0){
+    String temp = Serial.readStringUntil('\n');
+    if (temp == "1") set_time();     // set time
+    else if (temp == "2") get_NTP(); // NTP Sync
+  }
+  printLocalTime();                  // 로컬 시간 출력
+  
+}

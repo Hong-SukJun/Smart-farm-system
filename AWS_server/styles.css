@@ -1,0 +1,141 @@
+@media screen {
+    
+    body {
+        font-family: "Open Sans", sans-serif;
+        margin: 0;
+    }
+    
+    input[type='date'] {
+        border: none; 
+        position: relative; 
+        width: 95%;
+        padding: 10px;
+        background-color: white;
+        box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        font-weight: bold;
+      }
+    
+    #main-header {
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: linear-gradient(180deg, #EFFBA6 0%, #3FB749 100%);
+        padding: 0 5%;
+        position: relative;
+    }
+    
+    #farm-twin {
+        width: 159px;
+        height: 37px;
+        margin-top: 30px;
+        margin-right: 20px;
+    }
+
+    #dashboard {
+        font-family: Kanit;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 48px;
+        letter-spacing: 0em;
+        color: #FFFFFF;
+        margin-top: 5px;
+        text-shadow: 0px 4px 4px 0px #00000040;
+    }
+    
+    .container {
+        display: grid; 
+        grid-template-columns: repeat(2, 157px); /* 2개의 열을 지정합니다. */
+        grid-auto-rows: 75px; /* 각 버튼의 높이를 설정합니다. */
+        justify-content: center; /* 가운데 정렬합니다. */
+        gap: 10px; /* 버튼들 사이의 간격을 설정합니다. */
+    }
+    
+    .btn {
+        width: 100%; /* 버튼의 너비를 100%로 설정하여 2열로 배치되도록 합니다. */
+        height: 100%; /* 버튼의 높이를 100%로 설정하여 그리드 높이를 채웁니다. */
+        background: #F5F5F5;
+        border-radius: 50px;
+        box-shadow: 0px 1.5px 1.5px 0px;
+        border: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative; /* 자식 요소의 위치를 제어하기 위해 부모 요소에 position을 설정합니다. */
+    }
+    
+    .btn:hover {
+        background-color: #CCFFD5;
+        color: #000;
+        cursor: pointer;
+      }
+
+    .btn:nth-child(1) {
+        grid-column: 1 / span 2;
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .btn-img {
+        width: 30%;
+        height: 50%;
+        margin-right: 5px;
+    }
+
+    .cctv-img {
+        width: 15%;
+        height: 50%;
+        align-self: flex-start;
+        padding-left: 2%;
+        padding-top: 7%;
+    }
+
+    #cctv-font {
+        font-family: sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        /* text-align: center;
+        flex: 1;  */
+        margin-right: 95px;
+    }
+
+    .ec-img {
+        width: 32%;
+        height: 55%;
+        padding-right: 15%;
+    }
+
+    #ec-font {
+        font-family: sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        padding-right: 10%;
+    }
+
+    .illum-img {
+        width: 30%;
+        height: 50%;
+        padding-right: 10%;
+    }
+
+    #illum-font {
+        font-family: sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+        padding-right: 3%;
+    }
+    
+    #font {
+        font-family: sans-serif;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+
+}

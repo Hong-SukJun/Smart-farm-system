@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMARTFARM</title>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+    <div class="header_section layout_padding">
+        <div class="container">
+            <div>
+                <img src="images/farm-twin.png" id="farm-twin">
+            </div>
+        </div>
+        <div class="container">
+            <!-- <img src="images/gear.png" id="gear"> -->
+            <div class="flex">
+                <p id="dashboard" class="left mb-0 mt-0">DASHBOARD</p>
+                <div class="right">AI Tech by Spatial Computing Lab.<br>
+                    Kwangwoon University </div>
+            </div>
+        </div>
+    </div>
+    <div class="about_section layout_padding ">
+        <div class="container border mb-3 text-center">
+            <input type="date" id="datepicker" class="form-control nborder text-center">
+                <!-- API -->
+        <div id="result"></div>
+    </div>
+        
+     </div>
+    <div class="btn_section layout_padding">
+        <div class="container">
+            <div class="row">
+                <button onclick="cctv()" class="mb-3 btn col-md-6 btn-custom all">
+                    <img src="images/cctv.svg" class="btn-img">C C T V
+                </button>
+
+                <button onclick="humi()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/humidity.svg" class="btn-img"><span style="letter-spacing: 10px;width:80px">습도</span>
+                </button>
+        
+                <button onclick="temp()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/temperature.svg" class="btn-img"><span style="letter-spacing: 10px;width:80px">온도</span>
+                </button>
+        
+                <button onclick="co2()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/co2.svg" class="btn-img"><span style="letter-spacing: 3px;width:80px">CO2</span>
+                </button>
+
+                <button onclick="light()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/illuminance.svg" class="btn-img"><span style="letter-spacing: 10px;width:80px">조도</span>
+                </button>
+        
+                <button onclick="EC()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/ec.svg" class="btn-img"><span style="letter-spacing: 10px;width:80px">EC</span>
+                </button>
+        
+                <button onclick="pH()" class="mb-3 btn col-md-6 btn-custom">
+                    <img src="images/ph.svg" class="btn-img"><span style="letter-spacing: 10px;width:80px">PH</span>
+                </button>
+        
+            </div>    
+        </div>
+    </div>
+    <div class="tuya">
+        <button class="btn btn-tuya" onclick="toTuya(event)">
+            <img src="images/tuya-button.png" alt="투야로 이동" />
+        </button>
+    </div>
+    <div class="footer_section">
+        <p class="center">Copyright 2023 MinongBio</p>
+    </div>
+
+
+    <!-- Javascript files-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src='https://code.jquery.com/jquery-1.9.1.js'></script>
+<script>
+  // 기본값 = 오늘날짜
+  document.getElementById('datepicker').value = new Date().toISOString().substring(0, 10);
+
+
+  // 버튼 클릭 시 날짜 선택 창에서 선택한 날짜 / 위치 로 이동하기
+  function EC() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "ec_chart.html";
+  }
+
+  function pH() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "ph_chart.html";
+  }
+
+  function light() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "light_chart.html";
+  }
+
+  function humi() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "humi_chart.html";
+  }
+
+  function co2() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "co2_chart.html";
+  }
+
+  function temp() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url + "/" + "temp_chart.html";
+  }
+
+  function cctv() {
+    var selectedDate = document.getElementById("datepicker").value;
+    var formattedDate = selectedDate.replace("-", "/");
+    var year = formattedDate.substring(0, 4);
+    var month = formattedDate.substring(5, 7);
+    var day = formattedDate.substring(8, 10);
+    var url = year + "/" + month + "/" + day;
+    window.location.href = url;
+  }
+
+  function toTuya(event) {
+    window.open(
+    'intent://smart.tuya.com/#Intent;package=com.tuya.smart;scheme=https;end',
+    '_blank'
+    );
+  }
+
+// API
+var url = "https://api.weatherapi.com/v1/current.json?key=e37df145ea6a47c5aaa142527232410&q=korea&aqi=yes";
+var request = $.ajax({
+    url: url,
+    method: 'GET',
+    contentType: 'application/json',
+});
+
+request.done(function (data) {
+    console.log("Weather Json : ");
+    console.log(data)
+    
+    var html = `
+    	<div>
+    		<img src="${data.current.condition.icon}" />
+    	</div>
+    	<div>
+    		${data.current.condition.text}
+    	</div>
+    `;
+    $("#result").html(html);
+});
+
+request.fail(function (jqXHR, textStatus) {
+    alert('Request failed: ' + textStatus);
+});
+
+</script>
+
+
+</body>
+</html>
